@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AvisPulse | Obsidian Infinite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="style.css">
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-zinc-900 pb-6 gap-6">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+                    <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                    AVISPULSE <span class="text-zinc-500 font-light">INFINITE</span>
+                </h1>
+                <p class="text-zinc-600 text-[10px] uppercase tracking-widest mt-1">Professional Acoustic Analysis</p>
+            </div>
+            
+            <div class="flex gap-3 w-full md:w-auto">
+                <label class="flex-1 md:flex-none bg-zinc-900 text-white hover:bg-zinc-800 px-5 py-3 rounded-md font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-2 border border-zinc-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    UPLOAD
+                    <input type="file" id="audioUpload" accept="audio/*" class="hidden">
+                </label>
+                <button id="recordBtn" class="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-md font-bold text-xs transition-all flex items-center justify-center gap-2">
+                    <span id="recordIndicator">●</span> <span id="recordText">LIVE RECORD</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-8 space-y-6">
+                <div class="obsidian-panel p-4 md:p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-[10px] mono text-emerald-500 font-bold tracking-widest">SIGNAL_MONITOR</span>
+                        <div id="statusBadge" class="text-[10px] px-2 py-0.5 border border-zinc-800 rounded text-zinc-500 mono">STATUS: IDLE</div>
+                    </div>
+                    
+                    <canvas id="spectrogram" class="h-64 bg-black rounded border border-zinc-900 mb-4"></canvas>
+                    <canvas id="waveform" class="h-20 bg-black rounded border border-zinc-900"></canvas>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                        <div class="border-l border-zinc-800 pl-4">
+                            <p class="text-zinc-600 text-[9px] uppercase">Peak Pitch</p>
+                            <p id="statFreq" class="mono text-lg font-bold">0 <small class="text-zinc-600">Hz</small></p>
+                        </div>
+                        <div class="border-l border-zinc-800 pl-4">
+                            <p class="text-zinc-600 text-[9px] uppercase">Magnitude</p>
+                            <p id="statMag" class="mono text-lg font-bold">0%</p>
+                        </div>
+                        <div class="border-l border-zinc-800 pl-4">
+                            <p class="text-zinc-600 text-[9px] uppercase">Intensity (dBFS)</p>
+                            <p id="statDbLive" class="mono text-lg font-bold text-emerald-500">-Inf</p>
+                        </div>
+                        <div class="border-l border-zinc-800 pl-4">
+                            <p class="text-zinc-600 text-[9px] uppercase">Duration</p>
+                            <p id="statTime" class="mono text-lg font-bold">0.00s</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="obsidian-panel overflow-hidden">
+                    <div class="p-4 border-b border-zinc-900 flex justify-between items-center bg-zinc-900/10">
+                        <h3 class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Session_History</h3>
+                        <button id="clearHistoryBtn" class="text-[9px] text-zinc-600 hover:text-red-500 transition-colors mono border border-zinc-900 px-3 py-1 rounded hover:bg-red-500/5">PURGE_ENTRIES</button>
+                    </div>
+                    <div class="overflow-x-auto custom-scroll max-h-60">
+                        <table class="w-full text-left text-[11px] mono">
+                            <thead>
+                                <tr class="text-zinc-600 border-b border-zinc-900 bg-black">
+                                    <th class="p-4 font-normal">TIME</th>
+                                    <th class="p-4 font-normal">FREQ</th>
+                                    <th class="p-4 font-normal">DB_PEAK</th>
+                                    <th class="p-4 font-normal">IDENTITY</th>
+                                    <th class="p-4 font-normal">CONF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody" class="divide-y divide-zinc-900"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4">
+                <div class="obsidian-panel p-6 sticky top-8">
+                    <h2 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-8">Match_Recognition</h2>
+                    <div id="matchContainer">
+                        <div class="text-zinc-800 text-sm italic py-20 text-center border border-dashed border-zinc-900 rounded-lg">
+                            <p class="mono text-[9px] opacity-40">WAITING_FOR_SIGNAL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+ <script src="script.js"></script>
+    </body>
+    </html>
