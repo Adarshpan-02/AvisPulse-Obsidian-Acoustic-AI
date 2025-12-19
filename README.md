@@ -23,7 +23,7 @@
 ## 📦 Installation & Usage
 
 1.  **Clone or Download:**
-    Simply download the `index.html` file.
+    Simply download the `index.html,style.css,script.js` file.
 2.  **Run Locally:**
     * **Important:** Modern browsers block microphone access on `file://` protocols for security.
     * You must run this on a local server (e.g., VS Code "Live Server" extension) or via HTTPS.
@@ -45,5 +45,3 @@ Feel free to fork this project and submit pull requests. Suggested improvements:
 * Add TensorFlow.js for ML-based audio classification.
 * Add ability to export the history log as CSV.
 
----
-*© 2024 AvisPulse Systems*
